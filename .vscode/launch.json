@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "pwa-chrome",
+            "name": "devtools://devtools/bundled/inspector.html?ws=localhost:40000",
+            "request": "launch",
+            "url": "devtools://devtools/bundled/inspector.html?ws=localhost:40000"
+        }
+    ]
+}

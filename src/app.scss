@@ -1,5 +1,29 @@
 // Global SCSS styling
 // @see https://docs.nativescript.org/ui/styling
+
 Page {
-  background-color: #feebdc;
+  background: linear-gradient(180deg, #fb760d 0%, #ffddc1 100%);
+}
+
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
+.fa {
+  font-family: "Font Awesome 5 Pro", "fa-regular-400";
+  font-weight: 400;
+}
+
+.fas {
+  font-family: "Font Awesome 5 Pro", "fa-solid-900";
+  font-weight: 900;
+}
+
+.fab {
+  font-family: "Font Awesome 5 Brands", "fa-brands-400";
+  font-weight: 400;
+}
+
+.text-default {
+  color: #25424c;
 }
