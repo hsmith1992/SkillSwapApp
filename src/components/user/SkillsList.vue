@@ -1,23 +1,46 @@
 <template>
-  <StackLayout
-    class="text-default bg-white bg-opacity-75 shadow-inner px-6 text-xl"
-  >
+  <StackLayout class="text-default card shadow-inner px-6 text-xl">
     <FlexboxLayout
       class="py-2 mb-4 w-full border-b-2 border-black"
       justifyContent="space-between"
+      alignItems="center"
     >
-      <Label class="text-2xl" text="Skills"></Label>
-      <Label class="font-bold text-2xl" @tap="showSkillsModal" text="+"></Label>
+      <Label class="text-2xl" text="My Skills"></Label>
+      <Label
+        v-if="!editSkills"
+        class="font-bold text-lg fas"
+        @tap="editSkills = true"
+        :text="'fa-edit' | fonticon"
+      ></Label>
+      <Label
+        v-if="editSkills"
+        class="font-bold text-lg"
+        @tap="editSkills = false"
+        text="X"
+      ></Label>
     </FlexboxLayout>
 
     <Label class="h-full" v-if="!skills" text="Add Skills"></Label>
-    <FlexboxLayout v-else flexWrap="wrap" class="w-full">
+    <FlexboxLayout :key="refreshKey" v-else flexWrap="wrap" class="w-full">
       <skill-gauge
         class="w-1/3 mb-1"
         v-for="(skill, key) in skills"
         :key="key"
+        :refresh="refresh"
         :skill="skill"
+        :edit="editSkills"
       ></skill-gauge>
+      <FlexboxLayout
+        flexDirection="column"
+        justifyContent="center"
+        alignContent="center"
+        class="w-1/3 mb-1"
+        v-if="editSkills"
+        @tap="showSkillsModal"
+      >
+        <Label class="text-3xl w-full text-center font-bold" text="+"></Label>
+        <Label class="text-lg w-full text-center" text="Add Skill"></Label>
+      </FlexboxLayout>
     </FlexboxLayout>
   </StackLayout>
 </template>
@@ -25,25 +48,29 @@
 <script>
 import SkillsEdit from "@/components/user/SkillsEdit.vue";
 import SkillGauge from "@/components/user/SkillGauge2.vue";
-import { readSkill } from "@/utils/core";
+import { API } from "@/config";
 
 export default {
-  props: ["profile"],
+  props: ["profile", "refresh"],
   components: { SkillsEdit, SkillGauge },
   data() {
-    return {};
+    return {
+      API: API,
+      skillsList: [],
+      editSkills: false,
+      refreshKey: 0,
+    };
   },
   computed: {
     skills() {
-      //
-      console.log("Skills", this.profile.skills);
-      if (this.profile && this.profile.skills) {
-        this.profile.skills.map((skill) => {
-          let detail = this.readSkill(skill.skillId);
+      this.refreshKey++;
+      if (this.profile && this.profile.skills && this.skillsList.length > 0) {
+        return this.profile.skills.map((s) => {
           return {
-            name: detail.name,
-            completed: skill.completed,
-            level: skill.level,
+            _id: s.skill._id,
+            name: s.skill.name,
+            completed: s.completed,
+            level: s.level,
           };
         });
       } else {
@@ -53,8 +80,19 @@ export default {
   },
   methods: {
     showSkillsModal() {
-      this.$showModal(SkillsEdit);
+      this.$showModal(SkillsEdit)
+        .then(() => this.refresh())
+        .then(() => (this.editSkills = false));
     },
+    fetchSkills() {
+      fetch(`${this.API}/skills`)
+        .then((res) => res.json())
+        .then((data) => (this.skillsList = data))
+        .catch((error) => `Unable to load skills: ${error}`);
+    },
+  },
+  mounted() {
+    this.fetchSkills();
   },
 };
 </script>

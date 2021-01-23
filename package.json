@@ -17,6 +17,7 @@
     "nativescript-toast": "^2.0.0",
     "nativescript-toasty": "^3.0.0-alpha.2",
     "nativescript-ui-gauge": "^7.0.2",
+    "nativescript-ui-listview": "^9.1.0",
     "nativescript-vue": "^2.8.1",
     "nativescript-vue-devtools": "^1.4.0",
     "nativescript-vue-star-rating": "0.0.5",

@@ -5,8 +5,6 @@
 <script>
 import Landing from "@/views/Landing.vue";
 import Home from "@/views/Home";
-import Account from "@/views/user/Account";
-
 export default {
   computed: {
     token() {

@@ -1,15 +1,24 @@
 <template>
-  <AbsoluteLayout width="120" height="80" class="w-1/3 h-32">
+  <AbsoluteLayout @tap="onTap" width="120" height="95" class="w-1/3">
     <Label
+      top="15"
       class="w-full text-center font-bold text-sm"
-      :text="skill.name"
+      :text="label"
     ></Label>
     <Label
-      top="55"
+      v-if="edit"
+      class="text-red-500 shadow font-bold fas"
+      top="0"
+      left="95"
+      :text="'fa-times-circle' | fonticon"
+    ></Label>
+
+    <Label
+      top="70"
       class="w-full text-center text-sm"
       :text="getLevelLabel(skill.level)"
     ></Label>
-    <RadRadialGauge top="20" class="w-full" height="100" ref="gauge">
+    <RadRadialGauge top="35" class="w-full" height="100" ref="gauge">
       <RadialScale
         ref="skillScale"
         v-tkRadialGaugeScales
@@ -95,23 +104,56 @@
 </template>
 
 <script>
+import { removeSkill } from "@/utils/core";
+import ConfirmModal from "@/components/base/ConfirmModal.vue";
+
 export default {
-  props: ["skill"],
+  props: ["skill", "edit", "refresh"],
+  components: { ConfirmModal },
   data() {
     return {
-      maxChar: 10,
+      maxChar: 14,
+      removeSkill,
     };
   },
   computed: {
+    token() {
+      return this.$store.state.auth.token;
+    },
+    user() {
+      return this.$store.state.auth.user;
+    },
     label() {
       if (this.skill.name.length > this.maxChar) {
-        return this.skill.name.slice(0, this.maxChar)[0] + "...";
+        return this.capitalizeFirstLetter(
+          this.skill.name.slice(0, this.maxChar - 3) + "..."
+        );
       } else {
-        return this.skill.name;
+        return this.capitalizeFirstLetter(this.skill.name);
       }
     },
   },
   methods: {
+    onTap() {
+      if (this.edit) {
+        this.$showModal(ConfirmModal, {
+          props: {
+            text: `Do you want to remove ${this.skill.name} from your skills?`,
+          },
+        }).then((data) => {
+          if (data) {
+            this.onConfirm();
+          }
+        });
+      }
+    },
+    onConfirm() {
+      if (this.edit) {
+        this.removeSkill(this.user._id, this.token, this.skill._id).then(() =>
+          this.refresh()
+        );
+      }
+    },
     getBarColor(level) {
       switch (level) {
         case 1:

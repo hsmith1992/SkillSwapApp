@@ -1,8 +1,12 @@
 // Global SCSS styling
 // @see https://docs.nativescript.org/ui/styling
 
-Page {
+Page-old {
   background: linear-gradient(180deg, #fb760d 0%, #ffddc1 100%);
+}
+
+Page {
+  background-color: rgb(251, 118, 13);
 }
 
 * {
@@ -25,5 +29,26 @@ Page {
 }
 
 .text-default {
-  color: #25424c;
+  color: rgb(37, 65, 76);
+}
+
+.text-light {
+  color: rgb(254, 235, 220);
+}
+
+.bg-light {
+  color: rgb(254, 235, 220);
+}
+
+.card {
+  background-color: rgb(254, 235, 220);
+}
+
+.nav {
+  background-color: rgb(37, 65, 76);
+}
+
+.nav-tab:active {
+  background-color: rgb(254, 235, 220);
+  color: rgb(37, 65, 76);
 }

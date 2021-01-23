@@ -1,16 +1,22 @@
 <template>
-  <StackLayout
-    class="text-default bg-white bg-opacity-75 shadow-inner px-6 text-xl"
-  >
-    <FlexboxLayout class="py-2 mb-4" justifyContent="space-between">
+  <StackLayout class="text-default card shadow-inner px-6 text-xl">
+    <FlexboxLayout
+      class="py-2 mb-4 w-full border-b-2 border-black"
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Label class="text-2xl" text="My Interests"></Label>
       <Label
-        class="text-2xl border-b-2 w-full border-black"
-        text="Interests"
+        v-if="!editInterests"
+        class="font-bold text-lg fas"
+        @tap="editInterests = true"
+        :text="'fa-edit' | fonticon"
       ></Label>
       <Label
-        class="font-bold text-2xl"
-        @tap="showInterestsModal"
-        text="+"
+        v-if="editInterests"
+        class="font-bold text-lg"
+        @tap="editInterests = false"
+        text="X"
       ></Label>
     </FlexboxLayout>
     <FlexboxLayout class="mb-4" flexWrap="wrap">
@@ -27,6 +33,11 @@
 <script>
 export default {
   props: ["interests"],
+  data() {
+    return {
+      editInterests: false,
+    }
+  },
   methods: {
     showInterestsModal() {},
   },

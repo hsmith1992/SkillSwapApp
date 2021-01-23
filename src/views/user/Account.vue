@@ -2,7 +2,7 @@
   <Page actionBarHidden="true">
     <ScrollView>
       <StackLayout>
-        <FlexboxLayout v-if="profile" alignItems="center" class="px-4 py-4">
+        <FlexboxLayout v-if="profile" alignItems="center" class="px-4 py-2">
           <Image
             class="h-40"
             :src="`${API}/user/profilePicture/${user._id}`"
@@ -10,10 +10,10 @@
           ></Image>
           <FlexBoxLayout class="ml-4" flexDirection="column">
             <Label
-              class="text-3xl font-bold text-white"
+              class="text-3xl text-white"
               :text="`${profile.firstname} ${profile.secondname}`"
             ></Label>
-            <Label class="text-xl text-white" text="Earlsfield, London"></Label>
+            <Label class="text-xl text-white" :text="location"></Label>
             <FlexboxLayout class="pt-2" alignItems="center">
               <StarRating :value="rating" size="75" />
               <Label
@@ -24,7 +24,10 @@
             </FlexboxLayout>
           </FlexBoxLayout>
         </FlexboxLayout>
-        <FlexboxLayout class="px-20 text-black" justifyContent="space-between">
+        <FlexboxLayout
+          class="px-20 text-default"
+          justifyContent="space-between"
+        >
           <StackLayout>
             <Label
               horizontalAlignment="center"
@@ -77,15 +80,16 @@
             ></Label>
           </StackLayout>
         </FlexboxLayout>
-        <skills-list class="mt-8" :profile="profile"></skills-list>
+        <skills-list
+          class="mt-2"
+          :refresh="refreshProfile"
+          :profile="profile"
+        ></skills-list>
         <interests-list
-          class="mt-8"
+          class="mt-2"
           :interests="profile.interests"
         ></interests-list>
-        <address-details
-          class="mt-8"
-          :address="profile.address"
-        ></address-details>
+        <details class="mt-2 mb-12" :profile="profile"></details>
       </StackLayout>
     </ScrollView>
   </Page>
@@ -95,16 +99,18 @@
 import { API } from "@/config";
 import axios from "axios";
 import SkillsList from "@/components/user/SkillsList.vue";
-import InterestsList from "../../components/user/InterestsList.vue";
-import AddressDetails from "../../components/user/AddressDetails.vue";
+import InterestsList from "@/components/user/InterestsList.vue";
+import Details from "@/components/user/Details.vue";
+import { getProfile } from "@/utils/core";
 
 export default {
-  components: { SkillsList, InterestsList, AddressDetails },
+  components: { SkillsList, InterestsList, Details },
   data() {
     return {
       API: API,
       rating: 4.2,
       profile: {},
+      getProfile,
       loading: {
         profile: true,
       },
@@ -117,24 +123,27 @@ export default {
     user() {
       return this.$store.state.auth.user;
     },
+    location() {
+      if (this.profile && this.profile.address) {
+        return `${this.capitalizeFirstLetter(
+          this.profile.address.town
+        )}, ${this.capitalizeFirstLetter(this.profile.address.area)}`;
+      } else {
+        return;
+      }
+    },
   },
   methods: {
-    getProfile() {
-      this.loading.profile = true;
-      axios
-        .get(`${API}/user/${this.user._id}`, {
-          headers: { Authorization: `bearer ${this.token}` },
-        })
-        .then((res) => {
-          this.profile = res.data;
-        })
-        .catch((error) => {
-          console.log(`Unable to load profile: ${error}`);
-        });
+    refreshProfile() {
+      this.getProfile(this.user, this.profile).then((profile) => {
+        this.profile = profile;
+      });
     },
   },
   mounted() {
-    this.getProfile();
+    this.getProfile(this.user, this.token).then((profile) => {
+      this.profile = profile;
+    });
   },
 };
 </script>
