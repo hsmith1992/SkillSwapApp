@@ -42,8 +42,7 @@
 
 <script>
 import { isEqual } from "lodash-es";
-import * as camera from "nativescript-camera";
-import { Image } from "tns-core-modules/ui/image";
+import { takePicture, requestPermissions } from "nativescript-camera";
 
 export default {
   props: ["swap", "userId"],
@@ -53,6 +52,8 @@ export default {
       message: "",
       chat: [],
       chatInterval: null,
+      cameraImage: null,
+      labelText: "",
     };
   },
   computed: {
@@ -101,9 +102,40 @@ export default {
         .catch((error) => console.log("Unable to send Message:", error));
     },
     takePicture() {
-      camera.takePicture().then((imageAsset) => {
-        let image = new Image();
-        image.src = imageAsset;
+      that = this;
+
+      requestPermissions().then(() => {
+        takePicture().then(
+          (imageAsset) => {
+            this.cameraImage = imageAsset;
+            imageAsset.getImageAsync(function (nativeImage) {
+              let scale = 1;
+              let actualWidth = 0;
+              let actualHeight = 0;
+              if (imageAsset.android) {
+                // get the current density of the screen (dpi) and divide it by the default one to get the scale
+                scale =
+                  nativeImage.getDensity() /
+                  android.util.DisplayMetrics.DENSITY_DEFAULT;
+                actualWidth = nativeImage.getWidth();
+                actualHeight = nativeImage.getHeight();
+              } else {
+                scale = nativeImage.scale;
+                actualWidth = nativeImage.size.width * scale;
+                actualHeight = nativeImage.size.height * scale;
+              }
+              that.labelText =
+                `Displayed Size: ${actualWidth}x${actualHeight} with scale ${scale}\n` +
+                `Image Size: ${Math.round(actualWidth / scale)}x${Math.round(
+                  actualHeight / scale
+                )}`;
+              console.log(`${labelText}`);
+            });
+          },
+          (err) => {
+            console.log("Error -> " + err.message);
+          }
+        );
       });
     },
   },

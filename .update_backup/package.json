@@ -6,7 +6,7 @@
   "author": "Henry Smith",
   "license": "MIT",
   "dependencies": {
-    "@nativescript/core": "^7.0.3",
+    "@nativescript/core": "^7.1.4",
     "@vue/devtools": "^5.3.3",
     "axios": "^0.21.0",
     "fuse.js": "^6.4.3",
@@ -24,7 +24,6 @@
     "nativescript-vue-devtools": "^1.4.0",
     "nativescript-vue-star-rating": "0.0.5",
     "tns-android": "^6.5.3",
-    "tns-core-modules": "^6.5.24",
     "vuex": "^3.5.1",
     "vuex-persist": "^3.1.3"
   },
