@@ -1,5 +1,4 @@
 import { API } from "@/config";
-import axios from 'axios';
 
 export const signup = (user) => {
   return fetch(`${API}/signup`, {

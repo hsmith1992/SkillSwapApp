@@ -15,6 +15,7 @@
           </StackLayout>
           <StackLayout>
             <Image
+              v-if="counterpart"
               class="w-32"
               :src="`${$API}/user/profilePicture/${counterpart._id}`"
             ></Image>
@@ -32,7 +33,7 @@
 
 <script>
 import { getProfile } from "@/utils/core";
-import Chat from "@/components/swaps/chat";
+import Chat from "@/components/swaps/Chat";
 
 export default {
   components: {
@@ -63,13 +64,12 @@ export default {
         this.swap.creator === this.profile._id
           ? this.swap.participant
           : this.swap.creator;
-      console.log("counterpart:", this.counterpartId);
-      fetch(`${this.$API}/user/public/${this.user._id}/${counterpartId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          this.counterpart = data;
+      this.$axios
+        .get(`${this.$API}/user/public/${this.user._id}/${counterpartId}`, {
+          headers: { Authorization: `Bearer ${this.token}` },
+        })
+        .then((res) => {
+          this.counterpart = res.data;
         })
         .catch((error) => console.log("Unable to load counterpart:", error));
     },
@@ -88,9 +88,7 @@ export default {
     },
   },
   mounted() {
-    this.getSwap().then(() => {
-      this.getCounterpart();
-    });
+    this.getSwap().then(() => this.getCounterpart());
     this.getProfile(this.user, this.token).then(
       (profile) => (this.profile = profile)
     );

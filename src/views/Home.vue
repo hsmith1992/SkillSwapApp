@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Landing from "@/views/Landing";
 import Account from "@/views/user/Account";
 import Swap from "@/views/swaps/Swap";

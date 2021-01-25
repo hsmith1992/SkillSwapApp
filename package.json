@@ -10,6 +10,8 @@
     "@vue/devtools": "^5.3.3",
     "axios": "^0.21.0",
     "fuse.js": "^6.4.3",
+    "lodash-es": "^4.17.20",
+    "nativescript-camera": "^4.5.0",
     "nativescript-fonticon": "^2.0.2",
     "nativescript-socketio": "^3.3.1",
     "nativescript-star-ratings": "^1.0.0",
@@ -22,6 +24,7 @@
     "nativescript-vue-devtools": "^1.4.0",
     "nativescript-vue-star-rating": "0.0.5",
     "tns-android": "^6.5.3",
+    "tns-core-modules": "^6.5.24",
     "vuex": "^3.5.1",
     "vuex-persist": "^3.1.3"
   },

@@ -9,6 +9,7 @@ import '~/assets/css/tailwind.css'
 import StarRating from 'nativescript-vue-star-rating'
 import store from '@/store/index'
 import { TNSFontIcon, fonticon } from 'nativescript-fonticon';
+import axios from "axios";
 
 TNSFontIcon.debug = false;
 TNSFontIcon.paths = {
@@ -22,13 +23,14 @@ TNSFontIcon.loadCss();
 
 //Global Variables
 Vue.prototype.$API = API;
+Vue.prototype.$axios = axios;
 
 //Middleware
 Vue.filter('fonticon', fonticon);
 Vue.use(VueDevtools)
 
 //Plugins
-Vue.user(RadListView);
+Vue.use(RadListView);
 Vue.use(StarRating);
 Vue.use(RadGaugePlugin);
 
@@ -39,6 +41,7 @@ Vue.mixin({
     capitalizeFirstLetter: str => str.charAt(0).toUpperCase() + str.slice(1)
   }
 })
+
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production')
 

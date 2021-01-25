@@ -5,7 +5,7 @@
         <FlexboxLayout v-if="profile" alignItems="center" class="px-4 py-2">
           <Image
             class="h-40"
-            :src="`${API}/user/profilePicture/${user._id}`"
+            :src="`${$API}/user/profilePicture/${user._id}`"
             strech="none"
           ></Image>
           <FlexBoxLayout class="ml-4" flexDirection="column">
@@ -96,8 +96,6 @@
 </template>
 
 <script>
-import { API } from "@/config";
-import axios from "axios";
 import SkillsList from "@/components/user/SkillsList.vue";
 import InterestsList from "@/components/user/InterestsList.vue";
 import Details from "@/components/user/Details.vue";
@@ -107,7 +105,6 @@ export default {
   components: { SkillsList, InterestsList, Details },
   data() {
     return {
-      API: API,
       rating: 4.2,
       profile: {},
       getProfile,
