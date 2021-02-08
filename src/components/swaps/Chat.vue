@@ -26,11 +26,7 @@
         hint="Type a message"
         v-model="message"
       >
-        <Label
-          :text="(fa - camera) | fonticon"
-          class="fas"
-          @tap="takePicture"
-        ></Label>
+        <Label class="fas" @tap="handleTap"></Label>
       </TextField>
       <Button
         @tap="handleTap"
@@ -42,7 +38,11 @@
 
 <script>
 import { isEqual } from "lodash-es";
-import { takePicture, requestPermissions } from "nativescript-camera";
+import {
+  isAvailable,
+  requestCameraPermissions,
+  takePicture,
+} from "@nativescript/camera";
 
 export default {
   props: ["swap", "userId"],
@@ -104,7 +104,7 @@ export default {
     takePicture() {
       that = this;
 
-      requestPermissions().then(() => {
+      requestCameraPermissions().then(() => {
         takePicture().then(
           (imageAsset) => {
             this.cameraImage = imageAsset;
