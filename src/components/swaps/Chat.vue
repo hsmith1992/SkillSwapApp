@@ -6,7 +6,9 @@
       separatorColor="transparent"
       for="(item,index) in chat"
       class="py-1 px-2 w-full h-48"
+      @scrolled="onScrolled"
     >
+      >
       <v-template>
         <FlexBoxLayout flexDirection="column" class="w-full">
           <Label
@@ -54,6 +56,8 @@ export default {
       chatInterval: null,
       cameraImage: null,
       labelText: "",
+      scrollEvent: {},
+      chatScrolled: false,
     };
   },
   computed: {
@@ -62,7 +66,12 @@ export default {
     },
   },
   methods: {
+    onScrolled(event) {
+      this.scrollEvent = event;
+      //this.chatScrolled = true;
+    },
     getChat() {
+      let that = this;
       if (this.swap && this.swap._id && this.userId) {
         this.$axios
           .get(`${this.$API}/swap/chat/${this.swap._id}/${this.userId}`, {
@@ -71,11 +80,12 @@ export default {
           .then((res) => {
             if (res.data.length > 0 && !isEqual(this.chat, res.data)) {
               this.chat = res.data;
-              this.$refs.listView.scrollToIndex(20, false);
-              this.$refs.listView.refresh();
             }
           })
           .then(() => {
+            if (!this.chatScrolled) {
+              that.$refs.listView.scrollToIndex(this.chat.length - 1, false);
+            }
             setTimeout(this.getChat, 2000);
           })
           .catch((error) => console.log("Unable to load chat:", error));
@@ -87,7 +97,7 @@ export default {
       return owner === this.userId ? "bg-blue-400 ml-20" : "bg-green-400 mr-20";
     },
     handleTap() {
-      this.axios
+      this.$axios
         .put(
           `${this.$API}/swap/chat/${this.swap._id}/${this.userId}`,
           { message: this.message },

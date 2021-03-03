@@ -14,32 +14,44 @@
       ></Label>
       <Label
         v-if="editSkills"
-        class="font-bold text-lg"
+        class="font-bold text-lg fa fas"
         @tap="editSkills = false"
-        text="X"
+        :text="'fa-cross' | fonticon"
       ></Label>
     </FlexboxLayout>
 
-    <Label class="h-full" v-if="!skills" text="Add Skills"></Label>
-    <FlexboxLayout :key="refreshKey" v-else flexWrap="wrap" class="w-full">
-      <skill-gauge
-        class="w-1/3 mb-1"
-        v-for="(skill, key) in skills"
-        :key="key"
-        :refresh="refresh"
-        :skill="skill"
-        :edit="editSkills"
-      ></skill-gauge>
-      <FlexboxLayout
-        flexDirection="column"
-        justifyContent="center"
-        alignContent="center"
-        class="w-1/3 mb-1"
-        v-if="editSkills"
-        @tap="showSkillsModal"
-      >
-        <Label class="text-3xl w-full text-center font-bold" text="+"></Label>
-        <Label class="text-lg w-full text-center" text="Add Skill"></Label>
+    <FlexboxLayout
+      flexDirection="column"
+      justifyContent="center"
+      alignContent="center"
+      class="w-1/3 mb-1"
+      v-if="!skills"
+      @tap="showSkillsModal"
+    >
+      <Label class="text-3xl w-full text-center font-bold" text="+"></Label>
+      <Label class="text-lg w-full text-center" text="Add Skill"></Label>
+    </FlexboxLayout>
+    <FlexboxLayout v-else justifyContent="center" class="w-full">
+      <FlexboxLayout :key="refreshKey" flexWrap="wrap">
+        <skill-gauge
+          class="w-1/3 mb-1"
+          v-for="(skill, key) in skills"
+          :key="key"
+          :refresh="refresh"
+          :skill="skill"
+          :edit="editSkills"
+        ></skill-gauge>
+        <FlexboxLayout
+          flexDirection="column"
+          justifyContent="center"
+          alignContent="center"
+          class="w-1/3 mb-1"
+          v-if="editSkills"
+          @tap="showSkillsModal"
+        >
+          <Label class="text-3xl w-full text-center font-bold" text="+"></Label>
+          <Label class="text-lg w-full text-center" text="Add Skill"></Label>
+        </FlexboxLayout>
       </FlexboxLayout>
     </FlexboxLayout>
   </StackLayout>

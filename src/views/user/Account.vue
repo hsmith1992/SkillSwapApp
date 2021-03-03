@@ -132,7 +132,7 @@ export default {
   },
   methods: {
     refreshProfile() {
-      this.getProfile(this.user, this.profile).then((profile) => {
+      this.getProfile(this.user, this.token).then((profile) => {
         this.profile = profile;
       });
     },

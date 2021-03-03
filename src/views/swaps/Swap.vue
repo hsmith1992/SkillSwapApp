@@ -1,7 +1,23 @@
 <template>
   <Page actionBarHidden="true">
-    <ScrollView>
+    <GridLayout v-if="loading" rows="*,auto,auto,*" columns="*">
+      <ActivityIndicator
+        height="200"
+        width="200"
+        row="1"
+        column="1"
+        :busy="loading"
+      ></ActivityIndicator>
+      <Label
+        row="2"
+        column="1"
+        class="text-2xl text-center p-4"
+        text="Loading Swap"
+      ></Label>
+    </GridLayout>
+    <ScrollView v-else>
       <StackLayout>
+        <Button @tap="navigateToSwaps" text="Back to Swaps"></Button>
         <FlexBoxLayout class="px-6 py-2" justifyContent="space-around">
           <StackLayout>
             <Image
@@ -36,7 +52,6 @@
         </detail-card>
         <chat class="mt-6" :userId="user._id" :swap="swap"></chat>
       </StackLayout>
-      <Button @tap="testNav">Test</Button>
     </ScrollView>
   </Page>
 </template>
@@ -46,7 +61,7 @@ import { getProfile } from "@/utils/core";
 import Chat from "@/components/swaps/Chat";
 import Offer from "@/components/swaps/Offer";
 import DetailCard from "@/components/base/DetailCard.vue";
-import Swaps from "@/views/swaps/Swap";
+import Swaps from "@/views/swaps/Swaps";
 
 export default {
   components: {
@@ -55,16 +70,16 @@ export default {
     DetailCard,
     Swaps,
   },
-  //props: ["swapId"],
+  props: ["swapId"],
   data() {
     return {
       logo: "~/assets/images/LogoNoText.png",
-      swapId: "60015a5b264db4315c37feb8", // This is temporary fixed
       getProfile,
       profile: {},
       counterpart: {},
       swap: {},
       refreshKey: 0,
+      loading: true,
     };
   },
   computed: {
@@ -76,8 +91,8 @@ export default {
     },
   },
   methods: {
-    testNav() {
-      this.navigateTo(Swaps);
+    navigateToSwaps() {
+      this.$navigateTo(Swaps, { frame: "swapTabFrame" });
     },
     getCounterpart() {
       let counterpartId =
@@ -85,7 +100,7 @@ export default {
           ? this.swap.participant
           : this.swap.creator;
       this.$axios
-        .get(`/user/public/${this.user._id}/${counterpartId}`, {
+        .get(`${this.$API}/user/public/${this.user._id}/${counterpartId}`, {
           headers: { Authorization: `Bearer ${this.token}` },
         })
         .then((res) => {
@@ -100,15 +115,33 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           this.swap = data;
+          return data;
         })
         .catch((error) => console.log("Unable to load swap:", error));
+    },
+    loaded() {
+      console.log("loading callsed");
+      if (
+        this.profile &&
+        this.profile._id &&
+        this.counterpart &&
+        this.counterpart._id &&
+        this.swap
+      ) {
+        return (this.loading = false);
+      } else {
+        console.log("Gets to timeout");
+        setTimeout(this.loaded, 1000);
+      }
     },
     refresh() {
       this.getSwap();
     },
   },
   mounted() {
-    this.getSwap().then(() => this.getCounterpart());
+    this.getSwap()
+      .then(() => this.getCounterpart())
+      .then(() => this.loaded());
     this.getProfile(this.user, this.token).then(
       (profile) => (this.profile = profile)
     );

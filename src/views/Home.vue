@@ -27,7 +27,7 @@
       </TabContentItem>
 
       <TabContentItem>
-        <Frame id="swapTabFrame"> <swap /></Frame>
+        <Frame id="swapTabFrame"> <swaps /></Frame>
       </TabContentItem>
 
       <TabContentItem>
@@ -43,12 +43,12 @@
 <script>
 import Landing from "@/views/Landing";
 import Account from "@/views/user/Account";
-import Swap from "@/views/swaps/Swap";
+import Swaps from "@/views/swaps/Swaps";
 
 export default {
   components: {
     Account,
-    Swap,
+    Swaps,
   },
   data() {
     return {
